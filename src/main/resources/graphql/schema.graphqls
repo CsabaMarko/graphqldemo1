@@ -1,0 +1,8 @@
+scalar DateTime
+scalar PositiveInt
+
+type Query {
+    users(page: PositiveInt = 1, size: PositiveInt = 20): [User]
+    userById(id: ID!): User
+}
+
