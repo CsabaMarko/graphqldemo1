@@ -1,0 +1,22 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+#schema {
+#    query: Query
+#}
+
+type Query {
+    userById(id: ID!): User
+    users(page: PositiveInt = 1, size: PositiveInt = 20): [User]
+}
+
+type User {
+    firstName: String
+    id: ID!
+    lastName: String
+}
+
+"An RFC-3339 compliant DateTime Scalar"
+scalar DateTime
+
+"An Int scalar that must be a positive value"
+scalar PositiveInt
