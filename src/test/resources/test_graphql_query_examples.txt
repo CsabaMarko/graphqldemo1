@@ -1,0 +1,21 @@
+query {
+  products(page: 1, size: 2) {
+    id
+    sku
+    name
+    price
+  }
+
+  customers(page: 1, size: 2) {
+    id
+    name
+    birthDate
+  }
+
+  users {
+    id
+    firstName
+    lastName
+  }
+}
+

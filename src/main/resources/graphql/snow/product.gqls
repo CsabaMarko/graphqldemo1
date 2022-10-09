@@ -1,0 +1,6 @@
+type Product {
+    id: Int!
+    sku: String
+    name: String
+    price: BigDecimal
+}

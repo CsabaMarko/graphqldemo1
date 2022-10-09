@@ -11,6 +11,6 @@ public class GraphQlConfig {
     @Bean
     public RuntimeWiringConfigurer runtimeWiringConfigurer() {
         return builder -> builder.scalar(ExtendedScalars.DateTime)
-                .scalar(ExtendedScalars.PositiveInt);
+                .scalar(ExtendedScalars.PositiveInt).scalar(ExtendedScalars.GraphQLBigDecimal);
     }
 }

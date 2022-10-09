@@ -1,8 +1,14 @@
 scalar DateTime
 scalar PositiveInt
+scalar BigDecimal
 
 type Query {
+    dummy: String
     users(page: PositiveInt = 1, size: PositiveInt = 20): [User]
     userById(id: ID!): User
+    products(page: PositiveInt = 1, size: PositiveInt = 20): [Product]
+    productById(id: ID!): Product
+    customers(page: PositiveInt = 1, size: PositiveInt = 20): [Customer]
+    customerById(id: ID!): Customer
 }
 
