@@ -1,5 +1,0 @@
-type Customer {
-    id: Int!
-    name: String
-    birthDate: DateTime
-}

@@ -1,14 +1,43 @@
-scalar DateTime
-scalar PositiveInt
-scalar BigDecimal
+# This file was generated based on ".graphqlconfig". Do not edit manually.
 
-type Query {
-    dummy: String
-    users(page: PositiveInt = 1, size: PositiveInt = 20): [User]
-    userById(id: ID!): User
-    products(page: PositiveInt = 1, size: PositiveInt = 20): [Product]
-    productById(id: ID!): Product
-    customers(page: PositiveInt = 1, size: PositiveInt = 20): [Customer]
-    customerById(id: ID!): Customer
+schema {
+    query: Query
 }
 
+type Customer {
+    birthDate: DateTime
+    id: Int!
+    name: String
+}
+
+type Product {
+    id: Int!
+    name: String
+    price: BigDecimal
+    sku: String
+}
+
+type Query {
+    customerById(id: ID!): Customer
+    customers(page: PositiveInt = 1, size: PositiveInt = 20): [Customer]
+    dummy: String
+    productById(id: ID!): Product
+    products(page: PositiveInt = 1, size: PositiveInt = 20): [Product]
+    userById(id: ID!): User
+    users(page: PositiveInt = 1, size: PositiveInt = 20): [User]
+}
+
+type User {
+    firstName: String
+    id: ID!
+    lastName: String
+}
+
+"An arbitrary precision signed decimal"
+scalar BigDecimal
+
+"An RFC-3339 compliant DateTime Scalar"
+scalar DateTime
+
+"An Int scalar that must be a positive value"
+scalar PositiveInt
