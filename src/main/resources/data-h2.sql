@@ -10,6 +10,7 @@ INSERT INTO product (id, sku, name, price) VALUES (6, 'spoon', 'Spoon', 1.00);
 INSERT INTO customer (id, name, birthdate) VALUES (1, 'John Doe', '1960-10-30');
 INSERT INTO customer (id, name, birthdate) VALUES (2, 'Pepito Pérez', '1954-07-15');
 INSERT INTO customer (id, name, birthdate) VALUES (3, 'Cosme Fulanito', '1956-05-12');
+INSERT INTO customer (id, name, birthdate) VALUES (4, 'Duffy Duck', '1976-04-11');
 
 INSERT INTO address (id, street, postal_code) VALUES (1, 'La Habana 4310', '1000');
 INSERT INTO address (id, street, postal_code) VALUES (2, '10 rue Henri Poincaré', '13014');
