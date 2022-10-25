@@ -28,7 +28,7 @@ public class ChangeRequest extends RootEntity<String> {
     private String description;
 
     @Column(name = "ACTIVE_INDICATOR")
-    private String active;
+    private Boolean active;
 
     @Column(name = "CHANGE_REQUEST_TYPE")
     private String type;

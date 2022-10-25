@@ -19,3 +19,79 @@ query {
   }
 }
 
+
+{
+  users {
+    id
+    snId
+    firstName
+    lastName
+    middleName
+    phone
+    email
+  }
+}
+
+{
+  users(page: 1, size: 5) {
+    id
+    snId
+    firstName
+    lastName
+    middleName
+    phone
+    email
+  }
+}
+
+
+{
+  changeRequests {
+    id
+    changeNumber
+    shortDescription
+    description
+    active
+    type
+    workStart
+    workEnd
+    timeWorkedHours
+    createdAt
+    updatedAt
+    assignedTo {
+      id
+    }
+    createdBy {
+      id
+    }
+    requestedBy {
+      id
+    }
+  }
+}
+
+{
+  changeRequests(page: 1, size: 2) {
+    id
+    changeNumber
+    shortDescription
+    description
+    active
+    type
+    workStart
+    workEnd
+    timeWorkedHours
+    createdAt
+    updatedAt
+    assignedTo {
+      id
+    }
+    createdBy {
+      id
+    }
+    requestedBy {
+      id
+    }
+  }
+}
+

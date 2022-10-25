@@ -25,12 +25,35 @@ type Query {
     products(page: PositiveInt = 1, size: PositiveInt = 20): [Product]
     userById(id: ID!): User
     users(page: PositiveInt = 1, size: PositiveInt = 20): [User]
+    changeRequests(page: PositiveInt = 1, size: PositiveInt = 20): [ChangeRequest]
+    changeRequestById(id: ID!): ChangeRequest
 }
 
 type User {
-    firstName: String
     id: ID!
+    snId: String
+    firstName: String
     lastName: String
+    middleName: String
+    phone: String
+    email: String
+}
+
+type ChangeRequest {
+    id: ID!
+    changeNumber: String
+    shortDescription: String
+    description: String
+    active: Boolean
+    type: String
+    workStart: DateTime
+    workEnd: DateTime
+    timeWorkedHours: Int
+    createdAt: DateTime
+    updatedAt: DateTime
+    assignedTo: User
+    createdBy: User
+    requestedBy: User
 }
 
 "An arbitrary precision signed decimal"
