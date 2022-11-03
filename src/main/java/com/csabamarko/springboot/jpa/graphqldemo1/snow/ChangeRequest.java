@@ -1,8 +1,7 @@
 package com.csabamarko.springboot.jpa.graphqldemo1.snow;
 
 import com.csabamarko.springboot.jpa.graphqldemo1.RootEntity;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
@@ -10,6 +9,9 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "CHANGE_REQUEST", schema = "SNOW")
 public class ChangeRequest extends RootEntity<String> {
