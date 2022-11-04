@@ -70,14 +70,11 @@ public class ToGraphQlReflectionUtil {
         try (ScanResult scanResult = new ClassGraph().acceptPackages(ROOT_PACKAGE_NAME).enableAllInfo().scan()) {
             ClassInfoList classInfoListEntities = scanResult.getClassesWithAnnotation(Entity.class);
             printer.println("## Input types for filter\n");
-            for (ClassInfo classInfo : classInfoListEntities) {
-                printer.printf("input %s {%n", classInfo.getSimpleName() + "Filter");
-                for (FieldInfo fieldInfo : classInfo.getFieldInfo()) {
-                    var filterFieldOption = this.javaFieldToFilterField(fieldInfo);
-                    filterFieldOption.ifPresent(s -> printer.println(INDENT + s));
-                }
-                printer.println("}\n");
-            }
+            this.classesLoop(classInfoListEntities,
+                    classInfo -> printer.printf("input %s {%n", classInfo.getSimpleName() + "Filter"),
+                    fieldInfo -> this.javaFieldToFilterField(fieldInfo).ifPresent(s -> printer.println(INDENT + s)),
+                    classInfo -> printer.println("}\n")
+            );
             printer.println();
         }
     }
@@ -104,9 +101,9 @@ public class ToGraphQlReflectionUtil {
         m.put("java.lang.Integer", "Int");
         m.put("java.lang.Long", "Int");
         m.put("java.lang.Boolean", "Boolean");
-        m.put("java.time.OffsetDateTime", "DateTime");
-        m.put("java.math.BigDecimal", "BigDecimal");
-        m.put("java.math.BigInteger", "BigInteger");
+//        m.put("java.time.OffsetDateTime", "DateTime");
+//        m.put("java.math.BigDecimal", "BigDecimal");
+//        m.put("java.math.BigInteger", "BigInteger");
         return m;
     }
 
