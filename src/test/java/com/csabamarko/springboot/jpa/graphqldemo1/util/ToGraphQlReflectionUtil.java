@@ -10,9 +10,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -39,22 +37,56 @@ public class ToGraphQlReflectionUtil {
     void metaModelGen() {
         try (ScanResult scanResult = new ClassGraph().acceptPackages(ROOT_PACKAGE_NAME).enableAllInfo().scan()) {
             ClassInfoList classInfoList = scanResult.getClassesWithAnnotation(Entity.class);
-            printer.print("// MetaModels:\n\n");
+            printer.print("## MetaModels for filters; see EntityFilterMetaData.java:\n\n");
             for (ClassInfo classInfo : classInfoList) {
-                printer.printf("static class %s {%n", classInfo.getSimpleName() + "_");
-
+                var entityClassName = classInfo.getSimpleName();
+                var lowerCaseEntityName = firstCharToLowerCase(entityClassName);
+                // Remember, we are looking for the 1st type parameter of the superclass RootEntity:
+                // Example: public class ChangeRequest extends RootEntity<String>
+                var idTypeSimpleName = classInfo.getTypeSignature().getSuperclassSignature().getTypeArguments()
+                        .get(0).toStringWithSimpleNames();
+                printer.printf("public static final EntityMeta<%1$s, %2$s, ?> %3$s = EntityMeta.from(%1$s.class, Arrays.asList(\n",
+                        entityClassName, idTypeSimpleName, lowerCaseEntityName);
+                List<String> fieldLines = new LinkedList<>();
                 for (FieldInfo fieldInfo : classInfo.getFieldInfo()) {
                     final TypeSignature fieldType = fieldInfo.getTypeSignatureOrTypeDescriptor();
                     if (filterTypeMap.containsKey(fieldType.toString())) {
-                        printer.printf("%spublic static volatile SingularAttribute<%s, %s> %s;\n", INDENT,
-                                classInfo.getSimpleName(), fieldType.toString(), fieldInfo.getName());
+                        if (fieldInfo.hasAnnotation(javax.persistence.Id.class)) {
+                            fieldLines.add(String.format("    FieldMeta.from(%1$s.class, \"%2$s\", true)",
+                                    fieldType.toStringWithSimpleNames(), fieldInfo.getName()));
+                        } else {
+                            fieldLines.add(String.format("    FieldMeta.from(%1$s.class, \"%2$s\")",
+                                    fieldType.toStringWithSimpleNames(), fieldInfo.getName()));
+                        }
                     }
                 }
-                printer.println("}\n");
+                printer.println(String.join(",\n", fieldLines));
+                printer.println("));\n");
             }
         }
     }
 
+//    @Test
+//    @EnabledIfSystemProperty(named = "com.csabamarko.springboot.jpa.graphqldemo1.util.run_helper_utils",
+//            matches = "true")
+//    void metaModelGen2() {
+//        try (ScanResult scanResult = new ClassGraph().acceptPackages(ROOT_PACKAGE_NAME).enableAllInfo().scan()) {
+//            ClassInfoList classInfoList = scanResult.getClassesWithAnnotation(Entity.class);
+//            printer.print("## MetaModels:\n\n");
+//            for (ClassInfo classInfo : classInfoList) {
+//                printer.printf("static class %s {%n", classInfo.getSimpleName() + "_");
+//
+//                for (FieldInfo fieldInfo : classInfo.getFieldInfo()) {
+//                    final TypeSignature fieldType = fieldInfo.getTypeSignatureOrTypeDescriptor();
+//                    if (filterTypeMap.containsKey(fieldType.toString())) {
+//                        printer.printf("%1$s public static volatile FieldMeta<%2$s> %3$s = FieldMeta.from(%2$s.class, \"%3$s\");\n", INDENT,
+//                                fieldType.toStringWithSimpleNames(), fieldInfo.getName());
+//                    }
+//                }
+//                printer.println("}\n");
+//            }
+//        }
+//    }
 
     @Test
     @EnabledIfSystemProperty(named = "com.csabamarko.springboot.jpa.graphqldemo1.util.run_helper_utils",
@@ -194,4 +226,12 @@ public class ToGraphQlReflectionUtil {
                 fieldInfo.getTypeSignatureOrTypeDescriptor().toString(), fieldInfo.getName()));
     }
 
+    private static String firstCharToLowerCase(String str) {
+        if (str == null || str.length() == 0) {
+            return str;
+        }
+        char[] charArray = str.toCharArray();
+        charArray[0] = Character.toLowerCase(charArray[0]);
+        return new String(charArray);
+    }
 }
