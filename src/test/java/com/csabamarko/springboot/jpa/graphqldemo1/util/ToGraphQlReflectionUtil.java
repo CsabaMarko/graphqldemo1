@@ -33,6 +33,28 @@ public class ToGraphQlReflectionUtil {
 
     private final PrintStream printer = System.out;
 
+    @Test
+    @EnabledIfSystemProperty(named = "com.csabamarko.springboot.jpa.graphqldemo1.util.run_helper_utils",
+            matches = "true")
+    void metaModelGen() {
+        try (ScanResult scanResult = new ClassGraph().acceptPackages(ROOT_PACKAGE_NAME).enableAllInfo().scan()) {
+            ClassInfoList classInfoList = scanResult.getClassesWithAnnotation(Entity.class);
+            printer.print("// MetaModels:\n\n");
+            for (ClassInfo classInfo : classInfoList) {
+                printer.printf("static class %s {%n", classInfo.getSimpleName() + "_");
+
+                for (FieldInfo fieldInfo : classInfo.getFieldInfo()) {
+                    final TypeSignature fieldType = fieldInfo.getTypeSignatureOrTypeDescriptor();
+                    if (filterTypeMap.containsKey(fieldType.toString())) {
+                        printer.printf("%spublic static volatile SingularAttribute<%s, %s> %s;\n", INDENT,
+                                classInfo.getSimpleName(), fieldType.toString(), fieldInfo.getName());
+                    }
+                }
+                printer.println("}\n");
+            }
+        }
+    }
+
 
     @Test
     @EnabledIfSystemProperty(named = "com.csabamarko.springboot.jpa.graphqldemo1.util.run_helper_utils",
