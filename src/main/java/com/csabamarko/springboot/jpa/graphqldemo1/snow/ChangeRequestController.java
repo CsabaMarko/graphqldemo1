@@ -6,6 +6,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -16,8 +17,8 @@ public class ChangeRequestController extends ControllerBase<ChangeRequest, Strin
     }
 
     @QueryMapping(name = "changeRequests")
-    public Page<ChangeRequest> list(@Argument int page, @Argument int size) {
-        return super.list(page, size);
+    public Page<ChangeRequest> list(@Argument Map<String, Object> args, @Argument int page, @Argument int size) {
+        return super.simpleFilteredlist(ChangeRequest.class, args, page, size);
     }
 
     @QueryMapping(name = "changeRequestById")

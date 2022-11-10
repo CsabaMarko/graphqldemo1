@@ -1,9 +1,10 @@
 package com.csabamarko.springboot.jpa.graphqldemo1.common.metadata;
 
+import com.csabamarko.springboot.jpa.graphqldemo1.common.filter.FieldModel;
 import lombok.Getter;
 
 @Getter
-public class FieldMeta<F extends Comparable<F>> {
+public class FieldMeta<F extends Comparable<F>> implements FieldModel<F> {
     private final Class<F> type;
     private final String name;
     private final boolean id;

@@ -1,5 +1,6 @@
 package com.csabamarko.springboot.jpa.graphqldemo1.common;
 
+import com.csabamarko.springboot.jpa.graphqldemo1.common.filter.FilterException;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import graphql.schema.DataFetchingEnvironment;
