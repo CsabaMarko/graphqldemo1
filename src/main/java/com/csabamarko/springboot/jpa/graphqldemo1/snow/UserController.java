@@ -6,6 +6,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -16,8 +17,9 @@ public class UserController extends ControllerBase<User, String> {
     }
 
     @QueryMapping(name = "users")
-    public Page<User> list(@Argument int page, @Argument int size) {
-        return super.list(page, size);
+    public Page<User> list(@Argument Map<String, Object> args, @Argument int page,
+                                         @Argument int size) {
+        return super.simpleFilteredList(User.class, args, page, size);
     }
 
     @QueryMapping(name = "userById")

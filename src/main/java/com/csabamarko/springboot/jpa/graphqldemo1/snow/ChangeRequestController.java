@@ -18,7 +18,7 @@ public class ChangeRequestController extends ControllerBase<ChangeRequest, Strin
 
     @QueryMapping(name = "changeRequests")
     public Page<ChangeRequest> list(@Argument Map<String, Object> args, @Argument int page, @Argument int size) {
-        return super.simpleFilteredlist(ChangeRequest.class, args, page, size);
+        return super.simpleFilteredList(ChangeRequest.class, args, page, size);
     }
 
     @QueryMapping(name = "changeRequestById")

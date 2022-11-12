@@ -24,8 +24,8 @@ type Query {
     productById(id: ID!): Product
     products(page: PositiveInt = 1, size: PositiveInt = 20): [Product]
     userById(id: ID!): User
-    users(page: PositiveInt = 1, size: PositiveInt = 20): [User]
-    changeRequests(page: PositiveInt = 1, size: PositiveInt = 20): [ChangeRequest]
+    users(filter: UserFilter, page: PositiveInt = 1, size: PositiveInt = 20): [User]
+    changeRequests(filter: ChangeRequestFilter, page: PositiveInt = 1, size: PositiveInt = 20): [ChangeRequest]
     changeRequestById(id: ID!): ChangeRequest
 }
 
@@ -64,3 +64,54 @@ scalar DateTime
 
 "An Int scalar that must be a positive value"
 scalar PositiveInt
+
+## Filters
+
+input ChangeRequestFilter {
+    id: StringExpression
+    changeNumber: StringExpression
+    shortDescription: StringExpression
+    description: StringExpression
+    active: BooleanExpression
+    type: StringExpression
+    workStart: DateTimeExpression
+    workEnd: DateTimeExpression
+    timeWorkedHours: IntExpression
+    createdAt: DateTimeExpression
+    updatedAt: DateTimeExpression
+}
+
+input UserFilter {
+    id: StringExpression
+    snId: StringExpression
+    firstName: StringExpression
+    lastName: StringExpression
+    middleName: StringExpression
+    phone: StringExpression
+    email: StringExpression
+}
+
+input StringExpression {
+    equals: String
+    notEquals: String
+    lessThan: String
+    greaterThan: String
+}
+
+input BooleanExpression {
+    equals: Boolean
+}
+
+input IntExpression {
+    equals: Int
+    notEquals: Int
+    lessThan: Int
+    greaterThan: Int
+}
+
+input DateTimeExpression {
+    equals: DateTime
+    notEquals: String
+    lessThan: String
+    greaterThan: String
+}

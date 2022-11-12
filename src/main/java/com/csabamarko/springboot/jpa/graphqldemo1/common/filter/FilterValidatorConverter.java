@@ -41,7 +41,7 @@ public class FilterValidatorConverter {
             var filterMap = (Map<String, Object>) args.get(SIMPLE_FILTER_NAME);
             // There should be only one entity:
             if (filterMap.isEmpty()) {
-                throw new FilterException("Missing field/attribute selection");
+                throw new FilterException("Invalid filter: Missing field/attribute selection");
             }
             return filterMapToModel(entityClass, filterMap);
         } catch (ClassCastException e) {

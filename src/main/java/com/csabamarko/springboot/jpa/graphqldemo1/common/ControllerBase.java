@@ -29,7 +29,7 @@ public abstract class ControllerBase<E extends RootEntity<ID>, ID extends Serial
         return repository.findById(id);
     }
 
-    protected Page<E> simpleFilteredlist(@NonNull Class<E> runtimeEntityClass, Map<String, Object> args, int page,
+    protected Page<E> simpleFilteredList(@NonNull Class<E> runtimeEntityClass, Map<String, Object> args, int page,
                                          int size) {
         var filterModelOption = FilterValidatorConverter
                 .argsFilterMapToModel(runtimeEntityClass, args);
