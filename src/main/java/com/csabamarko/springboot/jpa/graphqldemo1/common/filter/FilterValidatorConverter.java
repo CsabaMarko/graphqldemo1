@@ -2,8 +2,6 @@ package com.csabamarko.springboot.jpa.graphqldemo1.common.filter;
 
 import com.csabamarko.springboot.jpa.graphqldemo1.RootEntity;
 import com.csabamarko.springboot.jpa.graphqldemo1.common.filter.operator.OperatorLiteral;
-import com.csabamarko.springboot.jpa.graphqldemo1.common.metadata.FieldMeta;
-import com.csabamarko.springboot.jpa.graphqldemo1.snow.ChangeRequest;
 import com.csabamarko.springboot.jpa.graphqldemo1.snow.metadata.EntityFilterMetaData;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -19,11 +17,11 @@ public class FilterValidatorConverter {
 
     /*
         If the filter part in the query is like:
-            filter: {fieldName: {eq: "LiteralStringValue1"}}
+            filter: {fieldName: {equals: "LiteralStringValue1"}}
         Then the args Map is like:
             {"filter":
                 {"fieldName":
-                    {"eq": "LiteralStringValue1"}
+                    {"equals": "LiteralStringValue1"}
                  }
              }
      */
@@ -57,8 +55,7 @@ public class FilterValidatorConverter {
         var fieldMapEntry = getFirstAndOnlyEntry(filterMap);
         var potentialFieldName = fieldMapEntry.getKey();
         var fieldModel = getEntityAttributeInfo(entityClass, potentialFieldName)
-                .orElseThrow(() -> new FilterException(String.format("Invalid simple filter: no such field: '%s'", potentialFieldName)));
-        var fieldType = fieldModel.getType();
+                .orElseThrow(() -> new FilterException(String.format("Invalid simple filter: no such field or the field cannot be filtered: '%s'", potentialFieldName)));
         var operatorMap = (Map<String, Object>) fieldMapEntry.getValue();
         if (operatorMap.isEmpty()) {
             throw new FilterException("Invalid filter expression: no operator");
@@ -81,17 +78,18 @@ public class FilterValidatorConverter {
         throw new FilterException("Invalid number of key-value pairs in this map; expected only one.");
     }
 
-    private static <E extends RootEntity<ID>, ID extends Serializable, F extends Comparable<F>>
+    private static <E extends RootEntity<ID>, ID extends Serializable>
     Optional<FieldModel<?>> getEntityAttributeInfo(@NonNull Class<E> entityClass, String potentialFieldName) {
-        // TODO call metadata services etc.
-        // TODO now just dummy code:
-        if (entityClass.isAssignableFrom(ChangeRequest.class)) {
-            FieldMeta<?> fieldMeta = EntityFilterMetaData.changeRequest.getFieldMeta(potentialFieldName);
-            if (fieldMeta != null) {
-                return Optional.of((FieldModel<?>) fieldMeta);
+        var entityMetaOption = EntityFilterMetaData.getForEntity(entityClass);
+        if (entityMetaOption.isPresent()) {
+            var fieldMetaOption = entityMetaOption.get().getFieldMetaOption(potentialFieldName);
+            if (fieldMetaOption.isPresent()) {
+                return fieldMetaOption.map(fieldMeta -> fieldMeta);
+            } else {
+                return Optional.empty();
             }
+        } else {
             return Optional.empty();
         }
-        return Optional.empty();
     }
 }

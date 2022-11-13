@@ -17,16 +17,16 @@ import java.util.Optional;
 class AllEntitiesMetaTest {
 
     @Test
-    <E extends RootEntity<ID>, ID extends Serializable, F extends Comparable<F>>
+    <E extends RootEntity<ID>, ID extends Serializable>
     void testConsWithTypeParams() {
-        AllEntitiesMeta<E, ID, F> allEntities = new AllEntitiesMeta<>();
+        AllEntitiesMeta<E, ID> allEntities = new AllEntitiesMeta<>();
 
         var idField = new FieldMeta<>(String.class, "id", true);
         var changeNumberField = new FieldMeta<>(String.class, "changeNumber");
         var activeField = new FieldMeta<>(Boolean.class, "active");
         var timeWorkedField = new FieldMeta<>(Integer.class, "timeWorked");
 
-        var changeRequestMeta = EntityMeta.<E, ID, F>from(ChangeRequest.class, Arrays.asList(
+        var changeRequestMeta = EntityMeta.<E, ID>from(ChangeRequest.class, Arrays.asList(
                 idField, changeNumberField, activeField, timeWorkedField
         ));
         allEntities.add(changeRequestMeta);
@@ -37,16 +37,16 @@ class AllEntitiesMetaTest {
                 new FieldMeta<>(String.class, "lastName")
         };
 
-        var userMeta = EntityMeta.<E, ID, F>from(User.class, Arrays.asList(userFields));
+        var userMeta = EntityMeta.<E, ID>from(User.class, Arrays.asList(userFields));
         allEntities.add(userMeta);
 
         Assertions.assertTrue(allEntities.getEntityMeta(ChangeRequest.class).isPresent());
         Assertions.assertTrue(allEntities.getEntityMeta(User.class).isPresent());
         Assertions.assertTrue(allEntities.getEntityMeta(DummyEntity.class).isEmpty());
 
-        Optional<EntityMeta<E, ID, F>> changeRequestMetaOption = allEntities.getEntityMeta(ChangeRequest.class);
+        Optional<EntityMeta<E, ID>> changeRequestMetaOption = allEntities.getEntityMeta(ChangeRequest.class);
         Assertions.assertTrue(changeRequestMetaOption.isPresent());
-        EntityMeta<E, ID, F> changeRequestMetaResult = changeRequestMetaOption.get();
+        EntityMeta<E, ID> changeRequestMetaResult = changeRequestMetaOption.get();
         Assertions.assertEquals(ChangeRequest.class.getCanonicalName(),
                 changeRequestMetaOption.get().getType().getCanonicalName());
 

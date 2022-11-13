@@ -38,6 +38,8 @@ public class ToGraphQlReflectionUtil {
         try (ScanResult scanResult = new ClassGraph().acceptPackages(ROOT_PACKAGE_NAME).enableAllInfo().scan()) {
             ClassInfoList classInfoList = scanResult.getClassesWithAnnotation(Entity.class);
             printer.print("## MetaModels for filters; see EntityFilterMetaData.java:\n\n");
+            List<String> mapAdditionSourceList = new ArrayList<>(classInfoList.size());
+            var entitiesMapName = "allEntitiesMeta";
             for (ClassInfo classInfo : classInfoList) {
                 var entityClassName = classInfo.getSimpleName();
                 var lowerCaseEntityName = firstCharToLowerCase(entityClassName);
@@ -45,7 +47,8 @@ public class ToGraphQlReflectionUtil {
                 // Example: public class ChangeRequest extends RootEntity<String>
                 var idTypeSimpleName = classInfo.getTypeSignature().getSuperclassSignature().getTypeArguments()
                         .get(0).toStringWithSimpleNames();
-                printer.printf("public static final EntityMeta<%1$s, %2$s, ?> %3$s = EntityMeta.from(%1$s.class, Arrays.asList(\n",
+                mapAdditionSourceList.add(String.format("    %s.addT(%s)", entitiesMapName, lowerCaseEntityName));
+                printer.printf("public static final EntityMeta<%1$s, %2$s> %3$s = EntityMeta.from(%1$s.class, Arrays.asList(\n",
                         entityClassName, idTypeSimpleName, lowerCaseEntityName);
                 List<String> fieldLines = new LinkedList<>();
                 for (FieldInfo fieldInfo : classInfo.getFieldInfo()) {
@@ -63,30 +66,23 @@ public class ToGraphQlReflectionUtil {
                 printer.println(String.join(",\n", fieldLines));
                 printer.println("));\n");
             }
+            var mapMemberOutput = String.format("\nprivate static final AllEntitiesMeta<? extends RootEntity<?>, ? extends Serializable> %s = \n" +
+                            "            new AllEntitiesMeta<>();\n",
+                    entitiesMapName);
+            printer.println(mapMemberOutput);
+            var mapOutput = "\nstatic {\n"
+                    + String.join(";\n", mapAdditionSourceList)
+                    + ";\n"
+                    + "}\n";
+            printer.println(mapOutput);
+            var getForEntityOutput = "public static Optional<? extends EntityMeta<? extends RootEntity<?>, ? extends Serializable>>\n" +
+                    "getForEntity(@NonNull Class<? extends RootEntity<?>> entityClass) {\n" +
+                    "    return allEntitiesMeta.getEntityMeta(entityClass);\n" +
+                    "}\n";
+            printer.println(getForEntityOutput);
         }
     }
 
-//    @Test
-//    @EnabledIfSystemProperty(named = "com.csabamarko.springboot.jpa.graphqldemo1.util.run_helper_utils",
-//            matches = "true")
-//    void metaModelGen2() {
-//        try (ScanResult scanResult = new ClassGraph().acceptPackages(ROOT_PACKAGE_NAME).enableAllInfo().scan()) {
-//            ClassInfoList classInfoList = scanResult.getClassesWithAnnotation(Entity.class);
-//            printer.print("## MetaModels:\n\n");
-//            for (ClassInfo classInfo : classInfoList) {
-//                printer.printf("static class %s {%n", classInfo.getSimpleName() + "_");
-//
-//                for (FieldInfo fieldInfo : classInfo.getFieldInfo()) {
-//                    final TypeSignature fieldType = fieldInfo.getTypeSignatureOrTypeDescriptor();
-//                    if (filterTypeMap.containsKey(fieldType.toString())) {
-//                        printer.printf("%1$s public static volatile FieldMeta<%2$s> %3$s = FieldMeta.from(%2$s.class, \"%3$s\");\n", INDENT,
-//                                fieldType.toStringWithSimpleNames(), fieldInfo.getName());
-//                    }
-//                }
-//                printer.println("}\n");
-//            }
-//        }
-//    }
 
     @Test
     @EnabledIfSystemProperty(named = "com.csabamarko.springboot.jpa.graphqldemo1.util.run_helper_utils",

@@ -12,7 +12,7 @@ import java.util.List;
 class EntityMetaTest {
 
     @Test
-    <E extends RootEntity<ID>, ID extends Serializable, F extends Comparable<F>>
+    <E extends RootEntity<ID>, ID extends Serializable>
     void testConsWithTypeParams() {
         FieldMeta<?> idField = FieldMeta.from(String.class, "id", true);
         FieldMeta<?> changeNumberField = FieldMeta.from(String.class, "changeNumber");
@@ -21,7 +21,7 @@ class EntityMetaTest {
 
         List<FieldMeta<?>> fieldMetaList = Arrays.asList(idField, changeNumberField, activeField, timeWorkedField);
 
-        EntityMeta<E, ID, F> entityMeta = EntityMeta.from(ChangeRequest.class, fieldMetaList);
+        EntityMeta<E, ID> entityMeta = EntityMeta.from(ChangeRequest.class, fieldMetaList);
         Assertions.assertEquals(ChangeRequest.class.getCanonicalName(), entityMeta.getType().getCanonicalName());
         Assertions.assertEquals(String.class,
                 entityMeta.getFieldMeta("id").getType());
@@ -44,7 +44,7 @@ class EntityMetaTest {
         FieldMeta<?> activeField = new FieldMeta<>(Boolean.class, "active");
         FieldMeta<?> timeWorkedField = new FieldMeta<>(Integer.class, "timeWorked");
         List<FieldMeta<?>> fieldMetaList = Arrays.asList(idField, changeNumberField, activeField, timeWorkedField);
-        EntityMeta<?, ?, ?> entityMeta = EntityMeta.from(ChangeRequest.class, fieldMetaList);
+        EntityMeta<?, ?> entityMeta = EntityMeta.from(ChangeRequest.class, fieldMetaList);
         Assertions.assertEquals(ChangeRequest.class.getCanonicalName(), entityMeta.getType().getCanonicalName());
         Assertions.assertEquals(String.class.getCanonicalName(),
                 entityMeta.getFieldMeta("changeNumber").getType().getCanonicalName());

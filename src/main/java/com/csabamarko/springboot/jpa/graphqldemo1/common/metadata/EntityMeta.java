@@ -7,35 +7,35 @@ import java.io.Serializable;
 import java.util.*;
 
 @Getter
-public class EntityMeta<E extends RootEntity<ID>, ID extends Serializable, F extends Comparable<F>> {
+public class EntityMeta<E extends RootEntity<ID>, ID extends Serializable> {
     private final Class<E> type;
     private final String name;
-    private final Map<String, FieldMeta<F>> fieldsByName;
+    private final Map<String, FieldMeta<? extends Comparable<?>>> fieldsByName;
 
-    public EntityMeta(Class<E> type, Collection<FieldMeta<F>> fields) {
+    public EntityMeta(Class<E> type, Collection<FieldMeta<? extends Comparable<?>>> fields) {
         this.type = type;
         this.name = type.getSimpleName();
         this.fieldsByName = new HashMap<>();
-        for (FieldMeta<F> fieldMeta : fields) {
+        for (FieldMeta<?> fieldMeta : fields) {
             this.fieldsByName.put(fieldMeta.getName(), fieldMeta);
         }
     }
 
-    public FieldMeta<F> getFieldMeta(String fieldName) {
+    public FieldMeta<? extends Comparable<?>> getFieldMeta(String fieldName) {
         return fieldsByName.get(fieldName);
     }
 
+    public Optional<FieldMeta<? extends Comparable<?>>> getFieldMetaOption(String fieldName) {
+        return Optional.ofNullable(fieldsByName.get(fieldName));
+    }
+
     public static
-    <E extends RootEntity<ID>, ID extends Serializable, F extends Comparable<F>>
-    EntityMeta<E, ID, F> from(Class<?> type, Collection<FieldMeta<?>> fields) {
+    <E extends RootEntity<ID>, ID extends Serializable>
+    EntityMeta<E, ID> from(Class<? extends RootEntity<?>> type,
+                           Collection<FieldMeta<? extends Comparable<?>>> fields) {
         @SuppressWarnings("unchecked")
         Class<E> typeCasted = (Class<E>) type;
-        List<FieldMeta<F>> newFields = new ArrayList<>();
-        for (FieldMeta<?> fieldMeta : fields) {
-            @SuppressWarnings("unchecked")
-            FieldMeta<F> newFM = (FieldMeta<F>) fieldMeta;
-            newFields.add(newFM);
-        }
+        List<FieldMeta<?>> newFields = new ArrayList<>(fields);
         return new EntityMeta<>(typeCasted, newFields);
     }
 
