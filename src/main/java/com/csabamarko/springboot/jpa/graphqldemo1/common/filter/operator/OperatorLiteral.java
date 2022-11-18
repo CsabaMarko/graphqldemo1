@@ -4,10 +4,10 @@ import com.csabamarko.springboot.jpa.graphqldemo1.common.filter.FilterException;
 
 public enum OperatorLiteral {
 
-    EQ("equals"),
-    NE("notEquals"),
-    LT("lessThan"),
-    GT("greaterThan");
+    EQUALS("equals"),
+    NOT_EQUALS("notEquals"),
+    LESS_THAN("lessThan"),
+    GREATER_THAN("greaterThan");
 
     private final String text;
 
@@ -25,8 +25,7 @@ public enum OperatorLiteral {
                     OperatorLiteral.class.getSimpleName()));
         }
         for (OperatorLiteral operatorLiteral : OperatorLiteral.values()) {
-            // Allow both text and enum literal?
-            if (operatorLiteral.getText().equalsIgnoreCase(str) || operatorLiteral.toString().equalsIgnoreCase(str)) {
+            if (operatorLiteral.getText().equalsIgnoreCase(str)) {
                 return operatorLiteral;
             }
         }

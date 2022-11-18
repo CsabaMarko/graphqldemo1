@@ -13,18 +13,18 @@ public abstract class JpaSpecificationCreator {
     public static <E extends RootEntity<ID>, ID extends Serializable, VAL extends Comparable<VAL>>
     Specification<E> create(FieldModel<VAL> fieldModel, ValueModel<VAL> valueModel, OperatorLiteral operator) {
         return (root, query, builder) -> {
-            final Path<VAL> path = root.<VAL>get(fieldModel.getName());
+            final Path<VAL> path = root.get(fieldModel.getName());
             final VAL value = valueModel.getValue();
-            if (OperatorLiteral.EQ.equals(operator)) {
+            if (OperatorLiteral.EQUALS.equals(operator)) {
                 return builder.equal(path, value);
             }
-            if (OperatorLiteral.NE.equals(operator)) {
+            if (OperatorLiteral.NOT_EQUALS.equals(operator)) {
                 return builder.notEqual(path, value);
             }
-            if (OperatorLiteral.LT.equals(operator)) {
+            if (OperatorLiteral.LESS_THAN.equals(operator)) {
                 return builder.lessThan(path, value);
             }
-            if (OperatorLiteral.GT.equals(operator)) {
+            if (OperatorLiteral.GREATER_THAN.equals(operator)) {
                 return builder.greaterThan(path, value);
             }
             throw new FilterException("(Yet?) Unsupported operator: " + operator);
