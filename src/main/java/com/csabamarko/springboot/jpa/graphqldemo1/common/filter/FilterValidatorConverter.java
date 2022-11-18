@@ -10,32 +10,32 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
 
-// TODO make it non-static
-public class FilterValidatorConverter {
+// TODO make it non-static?
+class FilterValidatorConverter {
 
     private static final String SIMPLE_FILTER_NAME = "filter";
 
-    /*
-        If the filter part in the query is like:
-            filter: {fieldName: {equals: "LiteralStringValue1"}}
-        Then the args Map is like:
-            {"filter":
-                {"fieldName":
-                    {"equals": "LiteralStringValue1"}
-                 }
-             }
-     */
-    @SuppressWarnings("unchecked")
+
+    //    If the filter part in the query is like:
+    //        filter: {fieldName: {equals: "LiteralStringValue1"}}
+    //
+    //    Then the args Map is like:
+    //        {"filter":
+    //            {"fieldName":
+    //                {"equals": "LiteralStringValue1"}
+    //             }
+    //         }
     public static <E extends RootEntity<ID>, ID extends Serializable, F extends Comparable<F>>
     Optional<SimpleFilterModel<E, ID, F>> argsFilterMapToModel(@NonNull Class<E> entityClass,
-                                                           @Nullable Map<String, Object> args) throws FilterException {
+                                                               @Nullable Map<String, Object> args) throws FilterException {
         if (args == null) {
             return Optional.empty();
         }
-        if (! args.containsKey(SIMPLE_FILTER_NAME)) {
+        if (!args.containsKey(SIMPLE_FILTER_NAME)) {
             return Optional.empty();
         }
         try {
+            @SuppressWarnings("unchecked")
             var filterMap = (Map<String, Object>) args.get(SIMPLE_FILTER_NAME);
             // There should be only one entity:
             if (filterMap.isEmpty()) {

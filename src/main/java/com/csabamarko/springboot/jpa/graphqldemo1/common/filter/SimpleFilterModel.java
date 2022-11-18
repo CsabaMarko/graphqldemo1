@@ -12,7 +12,17 @@ public class SimpleFilterModel<E extends RootEntity<ID>, ID extends Serializable
     Class<E> entityClass;
     OperatorLiteral operator;
     FieldModel<F> fieldModel;
-    // ValueModel<F> valueModel;
     F value;
 
+
+    /**
+     * XXX <br>
+     * I have no idea why, but sometimes (this) Java doesn't allow to
+     * replace the &lt;F&gt; type param with just &lt;? extends Comparable&lt;?&gt;&gt;.
+     * Especially when I put this type into an Optional&lt;&gt;.
+     * This is an acceptable workaround.
+     */
+    public SimpleFilterModel<E, ID, ? extends Comparable<?>> withoutF() {
+        return this;
+    }
 }

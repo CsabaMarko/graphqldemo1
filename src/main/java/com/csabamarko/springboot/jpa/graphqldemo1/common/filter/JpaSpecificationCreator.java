@@ -4,14 +4,13 @@ import com.csabamarko.springboot.jpa.graphqldemo1.RootEntity;
 import com.csabamarko.springboot.jpa.graphqldemo1.common.filter.operator.OperatorLiteral;
 import org.springframework.data.jpa.domain.Specification;
 
-
 import javax.persistence.criteria.Path;
 import java.io.Serializable;
 
-public abstract class JpaSpecificationCreator {
+abstract class JpaSpecificationCreator {
 
     public static <E extends RootEntity<ID>, ID extends Serializable, VAL extends Comparable<VAL>>
-    Specification<E> create(FieldModel<VAL> fieldModel, ValueModel<VAL> valueModel, OperatorLiteral operator) {
+    Specification<E> create(FieldModel<VAL> fieldModel, ValueModel<VAL> valueModel, OperatorLiteral operator) throws FilterException {
         return (root, query, builder) -> {
             final Path<VAL> path = root.get(fieldModel.getName());
             final VAL value = valueModel.getValue();
@@ -32,7 +31,7 @@ public abstract class JpaSpecificationCreator {
     }
 
     public static <E extends RootEntity<ID>, ID extends Serializable, VAL extends Comparable<VAL>>
-    Specification<E> create(SimpleFilterModel<E, ID, VAL> simpleFilterModel) {
+    Specification<E> create(SimpleFilterModel<E, ID, VAL> simpleFilterModel) throws FilterException {
         var valueModel = new SimpleValueModel<>(simpleFilterModel.getFieldModel().getType(), simpleFilterModel.getValue());
         return create(simpleFilterModel.getFieldModel(), valueModel, simpleFilterModel.getOperator());
     }
